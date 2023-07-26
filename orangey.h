@@ -5,9 +5,6 @@
 
 #define ORANGEY_CONSTANT_128(high,low) ((((__uint128_t)high) << 64) + low)
 
-#define ORANGEY_STATE_INITIALIZER (ORANGEY_CONSTANT_128(0x979c9a98d8462005ULL, 0x7d3e9cb6cfe0549bULL))
-#define ORANGEY_SEQ_INITIALIZER (ORANGEY_CONSTANT_128(0x0000000000000001ULL, 0xda3e39cb94b95bdbULL))
-
 typedef struct{
 	__uint128_t state;
 	__uint128_t inc;
