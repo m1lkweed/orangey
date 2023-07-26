@@ -1,4 +1,4 @@
-# orangey
+# 🟠 orangey
 Orangey is a library to generate high-quality random numbers in various forms and distributions, all contained within a single-file header.
 ## Functions
 ```c
