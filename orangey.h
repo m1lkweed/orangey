@@ -177,7 +177,7 @@ uint64_t orangey_poisson(orangey_ctx_t *rng, double ev){
  * The functions orangey_gaussian() and orangey_poisson() were modified from Susan Haynes' code.
  * Her functions came with no license and were admittedly copied from:
  * Press, et al., Numerical Recipes in C: The Art of Scientific Computing, Cambridge University Press, 2nd ed, 1992.
- * The functions below are modified and use much more straight-forward math,
+ * The functions above are modified and use much more straight-forward math,
  * hopefully to the point of not infringing on any possible rights.
  *
  *
