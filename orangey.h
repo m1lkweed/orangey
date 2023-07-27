@@ -4,6 +4,9 @@
 #include <stdint.h>
 
 #define ORANGEY_CONSTANT_128(high,low) ((((__uint128_t)high) << 64) + low)
+#define ORANGEY_MUL ORANGEY_CONSTANT_128(2549297995355413924ULL, 4865540595714422341ULL)
+#define ORANGEY_INC  ORANGEY_CONSTANT_128(6364136223846793005ULL, 1442695040888963407ULL)
+#define ORANGEY_STATE_INIT ORANGEY_CONSTANT_128(0x979c9a98d8462005ULL, 0x7d3e9cb6cfe0549bULL)
 
 typedef struct{
 	__uint128_t state;
@@ -28,10 +31,6 @@ inline uint64_t orangey_rotr(uint64_t value, unsigned int rot){
 inline uint64_t orangey_output(__uint128_t state){
 	return orangey_rotr(((uint64_t)(state >> 64u)) ^ (uint64_t)state, state >> 122u);
 }
-
-#define ORANGEY_MUL ORANGEY_CONSTANT_128(2549297995355413924ULL, 4865540595714422341ULL)
-#define ORANGEY_INC  ORANGEY_CONSTANT_128(6364136223846793005ULL, 1442695040888963407ULL)
-#define ORANGEY_STATE_INIT ORANGEY_CONSTANT_128(0x979c9a98d8462005ULL, 0x7d3e9cb6cfe0549bULL)
 
 inline __uint128_t orangey_advance_lcg_128(__uint128_t state, __uint128_t delta, __uint128_t cur_mult, __uint128_t cur_plus){
 	__uint128_t acc_mult = 1u;
