@@ -5,7 +5,7 @@
 
 int main(){
 	orangey_ctx_t rng = {};
-	orangey_srand(&rng, 0, 0);
+	orangey_srand(&rng, ORANGEY_STATE_INIT, ORANGEY_INC);
 	for(int i = 0; i < 100; ++i){
 		printf("orangey_rand(&rng):                %.16lx\n", orangey_rand(&rng));
 	}
