@@ -26,16 +26,15 @@ uint64_t orangey_poisson(orangey_ctx_t *rng, double ev);
 
 #ifdef ORANGEY_IMPLEMENTATION
 #include <math.h>
-#include <stdbit.h>
-inline uint64_t orangey_rotr(uint64_t value, unsigned int rot){
+static inline uint64_t orangey_rotr(uint64_t value, unsigned int rot){
 	return (value >> rot) | (value << ((-rot) & 63));
 }
 
-inline uint64_t orangey_output(__uint128_t state){
+static inline uint64_t orangey_output(__uint128_t state){
 	return orangey_rotr(((uint64_t)(state >> 64u)) ^ (uint64_t)state, state >> 122u);
 }
 
-inline __uint128_t orangey_advance_lcg_128(__uint128_t state, __uint128_t delta, __uint128_t cur_mult, __uint128_t cur_plus){
+static inline __uint128_t orangey_advance_lcg_128(__uint128_t state, __uint128_t delta, __uint128_t cur_mult, __uint128_t cur_plus){
 	__uint128_t acc_mult = 1u;
 	__uint128_t acc_plus = 0u;
 	while (delta > 0) {
@@ -43,15 +42,15 @@ inline __uint128_t orangey_advance_lcg_128(__uint128_t state, __uint128_t delta,
 			acc_mult *= cur_mult;
 			acc_plus = acc_plus * cur_mult + cur_plus;
 		}
-		cur_plus *= (cur_mult + 1);
+		cur_plus = (cur_mult + 1) * cur_plus;
 		cur_mult *= cur_mult;
 		delta /= 2;
 	}
 	return acc_mult * state + acc_plus;
 }
 
-inline void orangey_step(orangey_ctx_t *rng){
-	rng->state *= ORANGEY_MUL + rng->inc;
+static inline void orangey_step(orangey_ctx_t *rng){
+	rng->state = rng->state * ORANGEY_MUL + rng->inc;
 }
 
 void orangey_skip(orangey_ctx_t *rng, __uint128_t delta){
@@ -60,7 +59,7 @@ void orangey_skip(orangey_ctx_t *rng, __uint128_t delta){
 
 uint64_t orangey_peek(orangey_ctx_t *rng, __uint128_t delta){
 	orangey_ctx_t new_rng = *rng;
-	new_rng.state = orangey_advance_lcg_128(new_rng->state, delta, ORANGEY_MUL, (new_rng->inc)?(new_rng->inc - 1):0);
+	new_rng.state = orangey_advance_lcg_128(new_rng.state, delta, ORANGEY_MUL, (new_rng.inc)?(new_rng.inc - 1):0);
 	return orangey_output(new_rng.state);
 }
 
