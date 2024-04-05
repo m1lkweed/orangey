@@ -1,3 +1,4 @@
+
 #ifndef ORANGEY_H
 #define ORANGEY_H
 #include <stddef.h>
@@ -15,6 +16,7 @@ typedef struct{
 
 void orangey_srand(orangey_ctx_t *rng, __uint128_t initstate, __uint128_t initseq);
 uint64_t orangey_rand(orangey_ctx_t *rng);
+uint64_t orangey_peek(orangey_ctx_t *rng, __uint128_t delta);
 uint64_t orangey_rand_range(orangey_ctx_t *rng, uint64_t _min, uint64_t _max);
 void orangey_skip(orangey_ctx_t *rng, __uint128_t delta);
 double orangey_uniform_double_01(orangey_ctx_t *rng);
@@ -24,6 +26,7 @@ uint64_t orangey_poisson(orangey_ctx_t *rng, double ev);
 
 #ifdef ORANGEY_IMPLEMENTATION
 #include <math.h>
+#include <stdbit.h>
 inline uint64_t orangey_rotr(uint64_t value, unsigned int rot){
 	return (value >> rot) | (value << ((-rot) & 63));
 }
@@ -40,7 +43,7 @@ inline __uint128_t orangey_advance_lcg_128(__uint128_t state, __uint128_t delta,
 			acc_mult *= cur_mult;
 			acc_plus = acc_plus * cur_mult + cur_plus;
 		}
-		cur_plus = (cur_mult + 1) * cur_plus;
+		cur_plus *= (cur_mult + 1);
 		cur_mult *= cur_mult;
 		delta /= 2;
 	}
@@ -48,12 +51,19 @@ inline __uint128_t orangey_advance_lcg_128(__uint128_t state, __uint128_t delta,
 }
 
 inline void orangey_step(orangey_ctx_t *rng){
-	rng->state = rng->state * ORANGEY_MUL + rng->inc;
+	rng->state *= ORANGEY_MUL + rng->inc;
 }
 
 void orangey_skip(orangey_ctx_t *rng, __uint128_t delta){
 	rng->state = orangey_advance_lcg_128(rng->state, delta, ORANGEY_MUL, rng->inc);
 }
+
+uint64_t orangey_peek(orangey_ctx_t *rng, __uint128_t delta){
+	orangey_ctx_t new_rng = *rng;
+	new_rng.state = orangey_advance_lcg_128(new_rng->state, delta, ORANGEY_MUL, (new_rng->inc)?(new_rng->inc - 1):0);
+	return orangey_output(new_rng.state);
+}
+
 
 void orangey_srand(orangey_ctx_t *rng, __uint128_t initstate, __uint128_t initseq){
 	rng->state = 0U;
@@ -192,5 +202,5 @@ uint64_t orangey_poisson(orangey_ctx_t *rng, double ev){
  *
  * It's unclear if this "license" permits modification and/or incomplete copies, but no other functions in the header rely on this code.
  */
- #endif
- #endif
+#endif
+#endif
