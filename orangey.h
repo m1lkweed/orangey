@@ -59,7 +59,7 @@ void orangey_skip(orangey_ctx_t *rng, __uint128_t delta){
 
 uint64_t orangey_peek(orangey_ctx_t *rng, __uint128_t delta){
 	orangey_ctx_t new_rng = *rng;
-	new_rng.state = orangey_advance_lcg_128(new_rng.state, delta, ORANGEY_MUL, (new_rng.inc)?(new_rng.inc - 1):0);
+	new_rng.state = orangey_advance_lcg_128(new_rng.state, delta, ORANGEY_MUL, new_rng.inc);
 	return orangey_output(new_rng.state);
 }
 
