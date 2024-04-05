@@ -10,6 +10,10 @@ uint64_t orangey_rand(orangey_ctx_t *rng);
 ```
 Generates a random number, similar to `rand()`.
 ```c
+uint64_t orangey_peek(orangey_ctx_t *rng, __uint128_t delta);
+```
+Returns the `delta`-th future value without updating the `rng` context.
+```c
 uint64_t orangey_rand_range(orangey_ctx_t *rng, uint64_t min, uint64_t max);
 ```
 Generates a number in the range \[`min`, `max`\]
