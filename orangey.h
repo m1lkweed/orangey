@@ -77,20 +77,13 @@ uint64_t orangey_rand(orangey_ctx_t *rng){
 	return orangey_output(rng->state);
 }
 
+// Returns a random uint64_t in the range [min, max)
 uint64_t orangey_rand_range(orangey_ctx_t *rng, uint64_t _min, uint64_t _max){
 	uint64_t max = (_min > _max)?_min:_max;
 	uint64_t min = (_min < _max)?_min:_max;
 	uint64_t range = max - min;
-	if(max == min)
-		return max;
-	if(__builtin_popcountl(range) == 1)
-		return (orangey_rand(rng) & (range - 1)) + min;
-	uint64_t limit = (uint64_t)-(int64_t)range % range, r;
-	do
-		r = orangey_rand(rng);
-	while(r < limit);
-	r %= range;
-	return r + min;
+	__uint128_t r = orangey_rand(rng);
+	return (r * range / -1ULL) + min;
 }
 
 // Doesn't represent all doubles; not biased towards smaller values
